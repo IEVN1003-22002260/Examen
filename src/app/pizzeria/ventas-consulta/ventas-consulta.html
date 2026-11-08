@@ -1,0 +1,76 @@
+<div class="p-6 bg-white border-2 border-yellow-400 rounded-lg">
+  <h2 class="mb-4 text-lg font-semibold text-gray-900">{{ titulo() }}</h2>
+
+  <form [formGroup]="consulta" (ngSubmit)="consultar()" class="flex flex-wrap gap-2 mb-4">
+    <select formControlName="tipo"
+      class="p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500">
+      <option value="dia">Por día</option>
+      <option value="mes">Por mes</option>
+    </select>
+
+    <input type="text" formControlName="valor"
+      [placeholder]="consulta.controls.tipo.value === 'dia' ? 'lunes, martes...' : 'enero, febrero...'"
+      class="flex-1 min-w-32 p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" />
+
+    <button type="submit"
+      class="px-5 py-2.5 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
+      Ventas totales
+    </button>
+  </form>
+
+  @if (mensaje()) {
+    <div role="alert" class="p-3 mb-4 text-sm text-yellow-800 rounded-lg bg-yellow-50">{{ mensaje() }}</div>
+  }
+
+  <ul class="border border-gray-200 divide-y divide-gray-200 rounded-lg">
+    @for (v of ventas(); track v.id) {
+      <li class="flex items-center justify-between gap-2 p-3">
+        <span class="text-sm text-gray-900">
+          <span class="font-semibold">{{ v.nombre }}</span> ({{ v.fecha }}) total ${{ v.total }}
+        </span>
+        <button type="button" (click)="verDetalle(v.id)"
+          class="px-3 py-1.5 text-xs font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800">
+          Detalle
+        </button>
+      </li>
+    } @empty {
+      <li class="p-3 text-sm text-center text-gray-500">Sin ventas que mostrar</li>
+    }
+  </ul>
+
+  <p class="mt-4 text-lg font-semibold text-gray-900">Ventas totales: ${{ totalAcumulado() }}</p>
+
+  @if (detalle(); as d) {
+    <div class="p-4 mt-4 border border-gray-200 rounded-lg bg-gray-50">
+      <div class="flex items-start justify-between mb-2">
+        <div>
+          <h3 class="font-semibold text-gray-900">Pedido #{{ d.pedido.id }} - {{ d.pedido.nombre }}</h3>
+          <p class="text-xs text-gray-600">{{ d.pedido.direccion }} | Tel. {{ d.pedido.telefono }}</p>
+        </div>
+        <button type="button" (click)="cerrarDetalle()" class="text-xs text-blue-700 hover:underline">Cerrar</button>
+      </div>
+
+      <table class="w-full text-sm text-left text-gray-600">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+          <tr>
+            <th class="px-3 py-2">Tamaño</th>
+            <th class="px-3 py-2">Ingredientes</th>
+            <th class="px-3 py-2">Núm.</th>
+            <th class="px-3 py-2">SubTotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of d.pizzas; track $index) {
+            <tr class="border-b border-gray-200">
+              <td class="px-3 py-2">{{ p.tamano }}</td>
+              <td class="px-3 py-2">{{ p.ingredientes.length ? p.ingredientes.join(', ') : 'Sin ingredientes' }}</td>
+              <td class="px-3 py-2">{{ p.numPizzas }}</td>
+              <td class="px-3 py-2">${{ p.subtotal }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <p class="mt-2 text-sm font-semibold text-gray-900">Total del pedido: ${{ d.pedido.total }}</p>
+    </div>
+  }
+</div>

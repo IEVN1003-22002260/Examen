@@ -1,0 +1,54 @@
+<div class="p-6 bg-white border-2 border-gray-900 rounded-lg">
+  <h2 class="mb-4 text-lg font-semibold text-gray-900">Detalle del pedido</h2>
+
+  @if (mensaje()) {
+    <div role="alert" class="p-4 mb-4 text-sm rounded-lg"
+      [class.text-red-800]="esError()" [class.bg-red-50]="esError()"
+      [class.text-green-800]="!esError()" [class.bg-green-50]="!esError()">
+      {{ mensaje() }}
+    </div>
+  }
+
+  <div class="overflow-x-auto border border-gray-200 rounded-lg">
+    <table class="w-full text-sm text-left text-gray-600">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+        <tr>
+          <th class="px-4 py-3">Tamaño</th>
+          <th class="px-4 py-3">Ingredientes</th>
+          <th class="px-4 py-3">Núm. pizzas</th>
+          <th class="px-4 py-3">SubTotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of pedido.detalle(); track $index) {
+          <tr (click)="seleccionar($index)"
+            class="bg-white border-b border-gray-200 cursor-pointer hover:bg-gray-50"
+            [class.bg-blue-50]="seleccion() === $index">
+            <td class="px-4 py-3">{{ p.tamano }}</td>
+            <td class="px-4 py-3">{{ p.ingredientes.length ? p.ingredientes.join(', ') : 'Sin ingredientes' }}</td>
+            <td class="px-4 py-3">{{ p.numPizzas }}</td>
+            <td class="px-4 py-3">${{ p.subtotal }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="px-4 py-4 text-center text-gray-500">Aún no hay pizzas en el pedido</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <p class="mt-4 text-lg font-semibold text-gray-900">Total: ${{ pedido.total() }}</p>
+
+  <div class="flex gap-3 mt-4">
+    <button type="button" (click)="quitar()" [disabled]="seleccion() === null"
+      class="px-5 py-2.5 text-sm font-medium text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 disabled:opacity-50">
+      Quitar
+    </button>
+    <button type="button" (click)="terminar()" [disabled]="guardando()"
+      class="px-5 py-2.5 text-sm font-medium text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:ring-green-300 disabled:opacity-50">
+      Terminar
+    </button>
+  </div>
+  <p class="mt-2 text-xs text-gray-500">Para quitar una pizza, haz clic en su fila y presiona Quitar.</p>
+</div>

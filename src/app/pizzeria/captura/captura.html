@@ -1,0 +1,88 @@
+<form [formGroup]="pedido.form" class="p-6 bg-white border-2 border-red-500 rounded-lg">
+
+  <div formGroupName="cliente" class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2">
+    <div>
+      <label for="nombre" class="block mb-2 text-sm font-medium text-gray-900">Nombre</label>
+      <input id="nombre" type="text" formControlName="nombre" placeholder="Nombre completo"
+        class="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" />
+      @if (pedido.cliente.controls.nombre.touched && pedido.cliente.controls.nombre.invalid) {
+        <p class="mt-1 text-xs text-red-600">El nombre es obligatorio</p>
+      }
+    </div>
+
+    <div>
+      <label for="direccion" class="block mb-2 text-sm font-medium text-gray-900">Dirección</label>
+      <input id="direccion" type="text" formControlName="direccion" placeholder="Dirección"
+        class="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" />
+      @if (pedido.cliente.controls.direccion.touched && pedido.cliente.controls.direccion.invalid) {
+        <p class="mt-1 text-xs text-red-600">La dirección es obligatoria</p>
+      }
+    </div>
+
+    <div>
+      <label for="telefono" class="block mb-2 text-sm font-medium text-gray-900">Teléfono</label>
+      <input id="telefono" type="text" formControlName="telefono" placeholder="477-787-23"
+        class="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" />
+      @if (pedido.cliente.controls.telefono.touched && pedido.cliente.controls.telefono.invalid) {
+        <p class="mt-1 text-xs text-red-600">Teléfono inválido (solo números y guiones)</p>
+      }
+    </div>
+
+    <div>
+      <label for="fecha" class="block mb-2 text-sm font-medium text-gray-900">Fecha de compra</label>
+      <input id="fecha" type="date" formControlName="fecha"
+        class="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" />
+      @if (pedido.cliente.controls.fecha.touched && pedido.cliente.controls.fecha.invalid) {
+        <p class="mt-1 text-xs text-red-600">La fecha es obligatoria</p>
+      }
+    </div>
+  </div>
+
+  <div formGroupName="pizza" class="grid grid-cols-1 gap-4 md:grid-cols-3">
+
+    <fieldset class="p-4 border border-gray-300 rounded-lg">
+      <legend class="px-1 text-sm font-medium text-gray-900">Tamaño pizza</legend>
+      @for (t of tamanos; track t.nombre) {
+        <div class="flex items-center mb-2">
+          <input [id]="'tam-' + t.nombre" type="radio" formControlName="tamano" [value]="t.nombre"
+            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500" />
+          <label [attr.for]="'tam-' + t.nombre" class="text-sm font-medium text-gray-900 ms-2">
+            {{ t.nombre }} ${{ t.precio }}
+          </label>
+        </div>
+      }
+      @if (pedido.pizza.controls.tamano.touched && pedido.pizza.controls.tamano.invalid) {
+        <p class="text-xs text-red-600">Elige un tamaño</p>
+      }
+    </fieldset>
+
+    <fieldset class="p-4 border border-gray-300 rounded-lg">
+      <legend class="px-1 text-sm font-medium text-gray-900">Ingredientes</legend>
+      <div formGroupName="ingredientes">
+        @for (ing of ingredientes; track ing.nombre) {
+          <div class="flex items-center mb-2">
+            <input [id]="'ing-' + ing.nombre" type="checkbox" [formControlName]="ing.nombre"
+              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500" />
+            <label [attr.for]="'ing-' + ing.nombre" class="text-sm font-medium text-gray-900 ms-2">
+              {{ ing.nombre }} ${{ ing.precio }}
+            </label>
+          </div>
+        }
+      </div>
+    </fieldset>
+
+    <div>
+      <label for="numPizzas" class="block mb-2 text-sm font-medium text-gray-900">Núm. de pizzas</label>
+      <input id="numPizzas" type="number" min="1" formControlName="numPizzas"
+        class="block w-full p-2.5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" />
+      @if (pedido.pizza.controls.numPizzas.touched && pedido.pizza.controls.numPizzas.invalid) {
+        <p class="mt-1 text-xs text-red-600">Mínimo 1 pizza</p>
+      }
+
+      <button type="button" (click)="agregar()"
+        class="px-5 py-2.5 mt-4 text-sm font-medium text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300">
+        Agregar
+      </button>
+    </div>
+  </div>
+</form>
